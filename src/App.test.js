@@ -1,8 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders welcome message', async () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
+  // Wait for loading to finish
+  await waitFor(() => {
+    expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
+  });
+
+  const linkElement = screen.getByText(/Skill Swap/i);
   expect(linkElement).toBeInTheDocument();
 });
