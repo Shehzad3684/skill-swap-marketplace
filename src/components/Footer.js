@@ -1,100 +1,93 @@
 import React from 'react';
+import { Box, Container, Grid, Typography, Link as MuiLink, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
-const Footer = () => {
+function Footer() {
   return (
-    <footer className="bg-gray-900">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand Column */}
-          <div className="col-span-1">
-            <div className="flex items-center">
-              <i className="fas fa-exchange-alt text-blue-500 text-2xl mr-2"></i>
-              <span className="text-white text-xl font-bold">SkillSwap</span>
-            </div>
-            <p className="mt-4 text-gray-400">
-              Exchange skills and knowledge with your community.
-            </p>
-            <div className="mt-4 flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-500">
-                <i className="fab fa-twitter"></i>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-500">
-                <i className="fab fa-facebook"></i>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-500">
-                <i className="fab fa-instagram"></i>
-              </a>
-            </div>
-          </div>
+    <Box
+      component="footer"
+      sx={{
+        bgcolor: 'background.paper',
+        py: 6,
+        mt: 'auto',
+        borderTop: '1px solid rgba(255, 255, 255, 0.12)'
+      }}
+    >
+      <Container maxWidth="lg">
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="h6" color="text.primary" gutterBottom sx={{ fontFamily: '"Orbitron", sans-serif' }}>
+              SkillSwap
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Connect with professionals, exchange knowledge, and master new skills through peer-to-peer learning.
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <IconButton color="inherit" aria-label="Facebook">
+                <FacebookIcon />
+              </IconButton>
+              <IconButton color="inherit" aria-label="Twitter">
+                <TwitterIcon />
+              </IconButton>
+              <IconButton color="inherit" aria-label="LinkedIn">
+                <LinkedInIcon />
+              </IconButton>
+              <IconButton color="inherit" aria-label="Instagram">
+                <InstagramIcon />
+              </IconButton>
+            </Box>
+          </Grid>
 
-          {/* Quick Links */}
-          <div className="col-span-1">
-            <h3 className="text-white text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/about" className="text-gray-400 hover:text-blue-500">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/skills" className="text-gray-400 hover:text-blue-500">
-                  Browse Skills
-                </Link>
-              </li>
-              <li>
-                <Link to="/how-it-works" className="text-gray-400 hover:text-blue-500">
-                  How It Works
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="h6" color="text.primary" gutterBottom>
+              Quick Links
+            </Typography>
+            <Box display="flex" flexDirection="column">
+              <MuiLink component={Link} to="/" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                Home
+              </MuiLink>
+              <MuiLink component={Link} to="/skills" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                Browse Skills
+              </MuiLink>
+              <MuiLink component={Link} to="/about" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                About Us
+              </MuiLink>
+              <MuiLink component={Link} to="/contact" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                Contact
+              </MuiLink>
+            </Box>
+          </Grid>
 
-          {/* Categories */}
-          <div className="col-span-1">
-            <h3 className="text-white text-lg font-semibold mb-4">Categories</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/skills/technology" className="text-gray-400 hover:text-blue-500">
-                  Technology
-                </Link>
-              </li>
-              <li>
-                <Link to="/skills/arts" className="text-gray-400 hover:text-blue-500">
-                  Arts & Crafts
-                </Link>
-              </li>
-              <li>
-                <Link to="/skills/language" className="text-gray-400 hover:text-blue-500">
-                  Languages
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="h6" color="text.primary" gutterBottom>
+              Support
+            </Typography>
+            <Box display="flex" flexDirection="column">
+              <MuiLink component={Link} to="/faq" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                FAQ
+              </MuiLink>
+              <MuiLink component={Link} to="/terms" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                Terms of Service
+              </MuiLink>
+              <MuiLink component={Link} to="/privacy" color="text.secondary" sx={{ mb: 1, textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                Privacy Policy
+              </MuiLink>
+            </Box>
+          </Grid>
+        </Grid>
 
-          {/* Contact */}
-          <div className="col-span-1">
-            <h3 className="text-white text-lg font-semibold mb-4">Contact</h3>
-            <ul className="space-y-2">
-              <li className="text-gray-400">
-                <i className="fas fa-envelope mr-2"></i>
-                support@skillswap.com
-              </li>
-              <li className="text-gray-400">
-                <i className="fas fa-phone mr-2"></i>
-                +1 (555) 123-4567
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-8 pt-8 border-t border-gray-800">
-          <p className="text-gray-400 text-center">
-            © {new Date().getFullYear()} SkillSwap. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
+        <Box mt={5} pt={3} borderTop="1px solid rgba(255, 255, 255, 0.12)" textAlign="center">
+          <Typography variant="body2" color="text.secondary">
+            © {new Date().getFullYear()} Skill Swap Marketplace. All rights reserved.
+          </Typography>
+        </Box>
+      </Container>
+    </Box>
   );
-};
+}
 
 export default Footer;
