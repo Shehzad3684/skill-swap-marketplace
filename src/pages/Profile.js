@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, TextField, Button, Chip, List, ListItem, ListItemText, Box, Autocomplete } from '@mui/material';
+import { Container, Typography, TextField, Button, Chip, List, ListItem, ListItemText, Box, Autocomplete, Paper, IconButton } from '@mui/material';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, firestore } from '../firebase';
 import { findMatches } from '../utils/matching';
 import { motion } from 'framer-motion';
-import { styled } from '@mui/system';
-
-const NeonText = styled(Typography)(({ theme }) => ({
-  color: '#00ff00',
-  textShadow: '0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00, 0 0 20px #00ff00',
-  fontFamily: '"Orbitron", sans-serif',
-}));
+import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
+import MessageIcon from '@mui/icons-material/Message';
 
 const techSkills = [
   'Web Developer', 'Prompt Engineer', 'Front End', 'Back End', 'React', 'Angular', 'Vue.js',
@@ -27,6 +23,7 @@ function Profile() {
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState('');
   const [matches, setMatches] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -58,13 +55,11 @@ function Profile() {
     e.preventDefault();
     if (user) {
       try {
-        console.log('Updating profile for user:', user.uid);
         await setDoc(doc(firestore, 'users', user.uid), {
           name,
           bio,
           skills
         }, { merge: true });
-        console.log('Profile updated successfully!');
         alert('Profile updated successfully!');
       } catch (error) {
         console.error('Error updating profile:', error);
@@ -83,78 +78,98 @@ function Profile() {
     setSkills(skills.filter((skill) => skill !== skillToDelete));
   };
 
+  const handleMessageClick = (recipientId) => {
+    navigate('/messages', { state: { recipientId } });
+  };
+
   if (!user) {
-    return <NeonText variant="h6">Please sign in to view your profile.</NeonText>;
+    return <Typography variant="h6">Please sign in to view your profile.</Typography>;
   }
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <SEO title="Profile" description="Manage your profile and see your matches." />
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <NeonText variant="h3" gutterBottom sx={{ textAlign: 'center' }}>
+        <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', mb: 4 }}>
           Your Profile
-        </NeonText>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <TextField
-            fullWidth
-            label="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            sx={{ mb: 2 }}
-            InputProps={{ style: { fontFamily: '"Orbitron", sans-serif' } }}
-            InputLabelProps={{ style: { fontFamily: '"Orbitron", sans-serif' } }}
-          />
-          <TextField
-            fullWidth
-            label="Bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            margin="normal"
-            multiline
-            rows={4}
-            variant="outlined"
-            sx={{ mb: 2 }}
-            InputProps={{ style: { fontFamily: '"Orbitron", sans-serif' } }}
-            InputLabelProps={{ style: { fontFamily: '"Orbitron", sans-serif' } }}
-          />
-          <Autocomplete
-            fullWidth
-            options={techSkills}
-            renderInput={(params) => <TextField {...params} label="Add a skill" variant="outlined" />}
-            value={newSkill}
-            onChange={handleAddSkill}
-            sx={{ mb: 2 }}
-          />
-          <Box sx={{ mb: 2 }}>
-            {skills.map((skill) => (
-              <Chip
-                key={skill}
-                label={skill}
-                onDelete={() => handleDeleteSkill(skill)}
-                sx={{ m: 0.5, backgroundColor: '#00ff00', color: '#000', fontFamily: '"Orbitron", sans-serif' }}
-              />
-            ))}
+        </Typography>
+
+        <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
+          <Box component="form" onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              label="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              margin="normal"
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              margin="normal"
+              multiline
+              rows={4}
+              variant="outlined"
+            />
+            <Autocomplete
+              fullWidth
+              options={techSkills}
+              renderInput={(params) => <TextField {...params} label="Add a skill" variant="outlined" margin="normal" />}
+              value={newSkill}
+              onChange={handleAddSkill}
+            />
+            <Box sx={{ mt: 2, mb: 2 }}>
+              {skills.map((skill) => (
+                <Chip
+                  key={skill}
+                  label={skill}
+                  onDelete={() => handleDeleteSkill(skill)}
+                  sx={{ m: 0.5 }}
+                  color="primary"
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+            <Button type="submit" variant="contained" fullWidth size="large">
+              Update Profile
+            </Button>
           </Box>
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, fontFamily: '"Orbitron", sans-serif' }}>
-            Update Profile
-          </Button>
-        </Box>
-        <NeonText variant="h5" sx={{ mt: 4, mb: 2 }}>Your Matches</NeonText>
-        <List>
-          {matches.map((match, index) => (
-            <ListItem key={index} sx={{ backgroundColor: 'rgba(0, 255, 0, 0.1)', mb: 1, borderRadius: 2 }}>
-              <ListItemText 
-                primary={<Typography style={{ fontFamily: '"Orbitron", sans-serif' }}>{match.userName}</Typography>}
-                secondary={<Typography style={{ fontFamily: '"Orbitron", sans-serif' }}>{`Matched skill: ${match.matchedSkill}`}</Typography>}
-              />
-            </ListItem>
-          ))}
-        </List>
+        </Paper>
+
+        <Typography variant="h5" sx={{ mb: 2 }}>Your Matches</Typography>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          {matches.length === 0 ? (
+            <Typography variant="body1" sx={{ fontStyle: 'italic', color: 'text.secondary', textAlign: 'center' }}>
+              No matches found yet. Add more skills to find peers!
+            </Typography>
+          ) : (
+            <List>
+              {matches.map((match, index) => (
+                <ListItem
+                  key={index}
+                  divider={index !== matches.length - 1}
+                  secondaryAction={
+                    <IconButton edge="end" aria-label="message" onClick={() => handleMessageClick(match.userId)} color="primary">
+                      <MessageIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText
+                    primary={<Typography variant="h6">{match.userName || 'Anonymous User'}</Typography>}
+                    secondary={`Matched skill: ${match.matchedSkill}`}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </Paper>
       </motion.div>
     </Container>
   );
